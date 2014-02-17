@@ -122,12 +122,12 @@ angular.module('claApp')
 		  }
 		}
 
-		scope.$watch('nodes', function(newValue, oldValue) {  	     
+		scope.$watch('nodes.update', function(newValue, oldValue) {  	     
             if (newValue !== oldValue) {
                 console.log("Diagram Update"); 
                 update();
             }
-        },true); 
+        }); 
 
       }
     };

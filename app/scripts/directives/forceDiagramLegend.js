@@ -6,25 +6,39 @@ angular.module('claApp')
       templateUrl: 'views/templates/forceDiagramLegend.html',
       restrict: 'E',
       scope: {
+                list: '=',
                 nodes: '='
             },
       link: function postLink(scope, element, attrs) {
+        console.log(scope.list);
       	scope.toggle = function (node) {
 
-			scope.nodes.links.forEach(function (dlink, index) {
-		  		console.log(dlink.source.id + " : " + dlink.target.id + " : " + node.id);
-		            if (dlink.source.id === node.id || dlink.target.id === node.id) {
-		            	console.log("true");
-		                scope.nodes.links.splice(index, 1);
-		            }
-		        });
-      		scope.nodes.nodes.splice(node.index, 1);
-      	}
-		scope.$watch('nodes', function(newValue, oldValue) {  
-            if (newValue !== oldValue) {
-                console.log("Legend Update");
-            }
-        },true);      	
+          var nodesLeft = [];
+          scope.nodes.nodes.forEach(function (dnode, index) {
+              if (dnode.name !== node.name ) {
+                nodesLeft.push(dnode);
+              } else {
+                node.id = dnode.id;
+              }
+          });
+          scope.nodes.nodes = nodesLeft;
+          
+          var linksLeft = [];
+    			scope.nodes.links.forEach(function (dlink, index) {
+  		        if (dlink.source.id !== node.id && dlink.target.id !== node.id) {
+  		          linksLeft.push(dlink);
+    		      }
+    		  });
+          scope.nodes.links = linksLeft;
+
+          scope.nodes.update = scope.nodes.update + 1;
+        }
+
+  		  scope.$watch('nodes.update', function(newValue, oldValue) {  
+          if (newValue !== oldValue) {
+              console.log("Legend Update");
+          }
+        });
 
       }
     };
