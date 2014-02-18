@@ -6,7 +6,8 @@ angular.module('claApp')
       template: '<div id="viz"></div>',
       restrict: 'E',
       scope: {
-                nodes: '='
+                nodes: '=',
+                list: '='
             },
       link: function postLink(scope, element, attrs) {
 
@@ -61,6 +62,24 @@ angular.module('claApp')
 		update();
 
 		function update() {
+
+			scope.list.nodes.forEach(function (dnode, index) {
+				if ( dnode.hidden === true ) {
+					if (scope.nodes.nodes.indexOf(dnode) !== -1 ) {
+						scope.nodes.nodes.splice(scope.nodes.nodes.indexOf(dnode), 1);
+					}
+				} else {
+					if (scope.nodes.nodes.indexOf(dnode) === -1 ) {
+						scope.nodes.nodes.push(dnode);
+					}         	
+				}
+			});
+
+			scope.list.links.forEach(function (dlink, index) {
+				console.log(dlink);
+				
+			});
+
 		    force
 		        .nodes( scope.nodes.nodes )
 		        .links( scope.nodes.links )
