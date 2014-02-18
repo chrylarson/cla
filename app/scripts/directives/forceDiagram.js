@@ -10,7 +10,7 @@ angular.module('claApp')
 			list: '='
 		},
 		link: function postLink(scope, element, attrs) {
-
+			console.log(element);
 			function name(d) { return d.name; }
 			function group(d) { return d.group; }
 			var color = d3.scale.category10();
@@ -18,6 +18,12 @@ angular.module('claApp')
 
 			var width = 500,
 			height = 500;
+			//adjust width to width of parent div
+            if (typeof element[0].parentNode.clientWidth !== "undefined") {
+                width =  element[0].parentNode.clientWidth;
+            } else {
+                width = 500;
+            } 
 
 			var force = d3.layout.force()
 			.charge(-2000)
@@ -127,10 +133,10 @@ angular.module('claApp')
 
 			scope.$watch('nodes.update', function(newValue, oldValue) {  	     
 				if (newValue !== oldValue) {
-                //console.log("Diagram Update"); 
-                update();
-            }
-        }); 
+	                //console.log("Diagram Update"); 
+	                update();
+            	}
+            }); 
 
 		}
 	};
