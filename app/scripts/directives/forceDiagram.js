@@ -18,7 +18,7 @@ angular.module('claApp')
 
 			var width = 500,
 			height = 500;
-			//adjust width to width of parent div
+			//adjust width to fill parent div
             if (typeof element[0].parentNode.clientWidth !== "undefined") {
                 width =  element[0].parentNode.clientWidth;
             } else {
@@ -110,10 +110,12 @@ angular.module('claApp')
 
 				node.append("image")
 				.attr("xlink:href", "http://forums.ni.com/ni/attachments/ni/170/527271/1/LV2010.ico")
-				.attr("x", -8)
-				.attr("y", -8)
-				.attr("width", 16)
-				.attr("height", 16);
+				.attr("x", -16)
+				.attr("y", -16)
+				.attr("width", 32)
+				.attr("height", 32)
+				.append("svg:title")
+   				.text(function(d) { return d.name; });
 			}
 
 			function recenterVoronoi(nodes) {
