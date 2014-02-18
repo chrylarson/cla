@@ -370,6 +370,33 @@ angular.module('claApp')
 		d.target = hash_lookup[d.target];
 	});
 
+    //Pagination Functions
+    $scope.noOfPages = function () {
+        if ($scope.filteredEvents !== undefined) {
+            return Math.ceil($scope.filteredEvents.length / $scope.pageSize);
+        } else {
+            return 1;
+        }
+    };
+
+    $scope.showPagination = function () {
+        var result;
+        if ($scope.noOfPages() > 1) {
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    };
+
+    if ($scope.currentPage > $scope.noOfPages()) {
+        $scope.currentPage = $scope.noOfPages();
+    }
+
+    $scope.setPage = function (pageNo) {
+        $scope.currentPage = pageNo;
+    };
+
 	//listen for updates
 	$scope.$watch('data.nodes.update', function(newValue, oldValue) {       
 		if (newValue !== oldValue) {

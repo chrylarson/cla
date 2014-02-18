@@ -10,6 +10,13 @@ angular.module('claApp')
 			nodes: '='
 		},
 		link: function postLink(scope, element, attrs) {
+			scope.currentPage = 1;
+		    scope.pageSize = 10;
+		    scope.maxSize = 5;
+		    scope.noOfPages = 5;
+		    scope.filteredNodes = [];
+		    scope.predicate = 'name';
+		    scope.reverse = false;
 			scope.toggle = function (node) {
 				if( node.hidden === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
