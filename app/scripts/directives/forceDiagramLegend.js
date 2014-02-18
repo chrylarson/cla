@@ -17,14 +17,12 @@ angular.module('claApp')
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
 				}
 
-				console.log(scope.nodes);
 				scope.nodes.update = scope.nodes.update + 1;
 			}
 
-
 			scope.$watch('nodes.update', function(newValue, oldValue) {  
 				if (newValue !== oldValue) {
-					console.log("Legend Update");
+					//console.log("Legend Update");
 				}
 			});
 
