@@ -16,16 +16,16 @@ angular.module('claApp')
 				} else {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
 				}
-
+				//notify controllers/directives that list has been updated
 				scope.nodes.update = scope.nodes.update + 1;
 			}
 
+			//listen for updates
 			scope.$watch('nodes.update', function(newValue, oldValue) {  
 				if (newValue !== oldValue) {
 					//console.log("Legend Update");
 				}
 			});
-
 		}
 	};
 });

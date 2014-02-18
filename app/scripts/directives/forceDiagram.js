@@ -18,12 +18,13 @@ angular.module('claApp')
 
 			var width = 500,
 			height = 500;
-			//adjust width to fill parent div
+			//adjust height/width to fill parent div
             if (typeof element[0].parentNode.clientWidth !== "undefined") {
                 width =  element[0].parentNode.clientWidth;
-            } else {
-                width = 500;
-            } 
+            }
+            if (typeof scope.nodes.windowHeight !== "undefined") {
+                height = scope.nodes.windowHeight-100;
+            }
 
 			var force = d3.layout.force()
 			.charge(-2000)
@@ -132,10 +133,9 @@ angular.module('claApp')
 				return shapes;
 			}
 
-
+			//listen for updates
 			scope.$watch('nodes.update', function(newValue, oldValue) {  	     
 				if (newValue !== oldValue) {
-	                //console.log("Diagram Update"); 
 	                update();
             	}
             }); 
