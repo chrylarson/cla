@@ -1,13 +1,13 @@
 <div class="row-fluid">
-    <form class="">
-        <input ng-model="query" type="text" placeholder="Filter VI list" class="span12 search-query">
-    </form>
+	<form class="form-group">
+		<input ng-model="query" type="text" placeholder="Filter VI list" class="form-control ng-pristine ng-valid">
+	</form>
 </div>
 <ul class="list-group">
-<li class="list-group-item"  ng-repeat="node in (filteredNodes = (list.nodes | filter:query)) | orderBy:predicate:reverse | startFrom:(currentPage-1)*pageSize | limitTo:pageSize track by node.id" ng-click="toggle(node)">
-<i class="glyphicon glyphicon-plus" ng-show="node.hidden"></i>
-<i class="glyphicon glyphicon-minus" ng-hide="node.hidden"></i>
-{{node.name}}</li>
-</ul>
-<pagination total-items="filteredNodes.length" items-per-page="pageSize" page="currentPage" max-size="maxSize" boundary-links="true" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
-                </pagination>
+	<li class="list-group-item"  ng-repeat="node in (filteredNodes = (list.nodes | filter:query)) | orderBy:predicate:reverse | startFrom:(currentPage-1)*pageSize | limitTo:pageSize track by node.id" ng-click="toggle(node)">
+		<i class="glyphicon glyphicon-plus" ng-show="node.hidden"></i>
+		<i class="glyphicon glyphicon-minus" ng-hide="node.hidden"></i>
+		{{node.name}}</li>
+	</ul>
+	<pagination total-items="filteredNodes.length" items-per-page="pageSize" page="currentPage" max-size="maxSize" boundary-links="true" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+	</pagination>
