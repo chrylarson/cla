@@ -66,8 +66,14 @@ angular.module('claApp')
 			.y(function(d) { return d.y; })
 			.clipExtent([[-10, -10], [width+10, height+10]]);
 
-			update();
 
+			//wait for scope.list ready
+			scope.$watch('list', function(newValue, oldValue) {  	     
+				if (newValue !== oldValue) {
+					update();
+				}
+			});
+			
 			function update() {
 
 				scope.list.nodes.forEach(function (dnode, index) {
@@ -110,7 +116,7 @@ angular.module('claApp')
 				.call( force.drag );
 
 				node.append("image")
-				.attr("xlink:href", "http://forums.ni.com/ni/attachments/ni/170/527271/1/LV2010.ico")
+				.attr("xlink:href", function(d) { return "/styles/icons/" + d.icon; })
 				.attr("x", -16)
 				.attr("y", -16)
 				.attr("width", 32)

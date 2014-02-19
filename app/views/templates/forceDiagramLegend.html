@@ -5,9 +5,17 @@
 </div>
 <ul class="list-group">
 	<li class="list-group-item"  ng-repeat="node in (filteredNodes = (list.nodes | filter:query)) | orderBy:predicate:reverse | startFrom:(currentPage-1)*pageSize | limitTo:pageSize track by node.id" ng-click="toggle(node)">
-		<i class="glyphicon glyphicon-plus" ng-show="node.hidden"></i>
-		<i class="glyphicon glyphicon-minus" ng-hide="node.hidden"></i>
-		{{node.name}}</li>
+	<div class="row">
+		<div class="col-xs-9">
+			<i class="glyphicon glyphicon-eye-close" ng-show="node.hidden"></i>
+			<i class="glyphicon glyphicon-eye-open" ng-hide="node.hidden"></i>
+			{{node.name}} 
+		</div>
+		<div class="col-xs-3">
+			<img src="/styles/icons/{{node.icon}}" />
+		</div>
+		</div>
+		</li>
 	</ul>
 	<pagination total-items="filteredNodes.length" items-per-page="pageSize" page="currentPage" max-size="maxSize" boundary-links="true" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
 	</pagination>
