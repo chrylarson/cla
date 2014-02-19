@@ -31,25 +31,13 @@ angular.module('claApp')
 			.linkDistance(30)
 			.size([width, height])
 			.on('tick', function() {
-				node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; })
-				.attr('clip-path', function(d) { return 'url(#clip-'+d.index+')'; });
+				node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; });
 
 				link.attr('x1', function(d) { return d.source.x; })
 				.attr('y1', function(d) { return d.source.y; })
 				.attr('x2', function(d) { return d.target.x; })
 				.attr('y2', function(d) { return d.target.y; });
 
-				var clip = svg.selectAll('.clip')
-				.data( recenterVoronoi(node.data()), function(d) { return d.point.index; } );
-
-				clip.enter().append('clipPath')
-				.attr('id', function(d) { return 'clip-'+d.point.index; })
-				.attr('class', 'clip');
-				clip.exit().remove()
-
-				clip.selectAll('path').remove();
-				clip.append('path')
-				.attr('d', function(d) { return 'M'+d.join(',')+'Z'; });
 			});
 
 			var svg = d3.select('#viz')
@@ -72,12 +60,6 @@ angular.module('claApp')
 
 			var link = vis.selectAll(".link"),
 			node = vis.selectAll(".node");
-
-			var voronoi = d3.geom.voronoi()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.clipExtent([[-10, -10], [width+10, height+10]]);
-
 
 			//wait for scope.list ready
 			scope.$watch('list', function(newValue, oldValue) {  	     
@@ -114,7 +96,6 @@ angular.module('claApp')
 				.links( scope.nodes.links )
 				.start();
 
-
 				link = link.data( scope.nodes.links );
 				link.exit().remove();
 				link.enter().append('line')
@@ -128,7 +109,8 @@ angular.module('claApp')
 				.attr('class', 'node')
 				.call( force.drag );
 
-				node.append("image")
+				node.append("svg:image")
+				.attr("class", "square")
 				.attr("xlink:href", function(d) { return "images/icons/" + d.icon; })
 				.attr("x", -16)
 				.attr("y", -16)
@@ -136,20 +118,6 @@ angular.module('claApp')
 				.attr("height", 32)
 				.append("svg:title")
    				.text(function(d) { return d.name; });
-			}
-
-			function recenterVoronoi(nodes) {
-				var shapes = [];
-				voronoi(nodes).forEach(function(d) {
-					if ( !d.length ) return;
-					var n = [];
-					d.forEach(function(c){
-						n.push([ c[0] - d.point.x, c[1] - d.point.y ]);
-					});
-					n.point = d.point;
-					shapes.push(n);
-				});
-				return shapes;
 			}
 
 			//listen for updates
