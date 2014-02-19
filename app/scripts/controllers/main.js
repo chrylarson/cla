@@ -13,7 +13,8 @@ angular.module('claApp')
 		}
 	};
 
-    d3.json("/static-linkages.json", function(error, root) {
+    d3.json("static-linkages.json", function(error, root) {
+        console.log("Ctrl Update List");
         $scope.list = root;
 
     	$scope.list.nodes.forEach(function (node, index) {
@@ -36,6 +37,7 @@ angular.module('claApp')
     		d.source = hash_lookup[d.source];
     		d.target = hash_lookup[d.target];
     	});
+        $scope.$apply();
     });
 
     //Pagination Functions

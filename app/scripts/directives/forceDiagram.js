@@ -10,7 +10,6 @@ angular.module('claApp')
 			list: '='
 		},
 		link: function postLink(scope, element, attrs) {
-			console.log(element);
 			function name(d) { return d.name; }
 			function group(d) { return d.group; }
 			var color = d3.scale.category10();
@@ -18,6 +17,7 @@ angular.module('claApp')
 
 			var width = 500,
 			height = 500;
+
 			//adjust height/width to fill parent div
             if (typeof element[0].parentNode.clientWidth !== "undefined") {
                 width =  element[0].parentNode.clientWidth;
@@ -27,9 +27,8 @@ angular.module('claApp')
             }
 
 			var force = d3.layout.force()
-			.charge(-2000)
-			.friction(0.3)
-			.linkDistance(50)
+			.charge(-1000)
+			.linkDistance(30)
 			.size([width, height])
 			.on('tick', function() {
 				node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; })
@@ -56,10 +55,23 @@ angular.module('claApp')
 			var svg = d3.select('#viz')
 			.append('svg')
 			.attr('width', width)
-			.attr('height', height);
+			.attr('height', height)
+			.attr("viewBox", "0 0 " + width + " " + height )
+    		.attr("preserveAspectRatio", "xMidYMid meet")
+    		.attr("pointer-events", "all")
+    		.call(d3.behavior.zoom().on("zoom", redraw));
 
-			var link = svg.selectAll(".link"),
-			node = svg.selectAll(".node");
+			var vis = svg
+			    .append('svg:g');
+
+			function redraw() {
+			  vis.attr("transform",
+			      "translate(" + d3.event.translate + ")"
+			      + " scale(" + d3.event.scale + ")");
+			}
+
+			var link = vis.selectAll(".link"),
+			node = vis.selectAll(".node");
 
 			var voronoi = d3.geom.voronoi()
 			.x(function(d) { return d.x; })
@@ -70,6 +82,7 @@ angular.module('claApp')
 			//wait for scope.list ready
 			scope.$watch('list', function(newValue, oldValue) {  	     
 				if (newValue !== oldValue) {
+					console.log("List updated");
 					update();
 				}
 			});
@@ -116,7 +129,7 @@ angular.module('claApp')
 				.call( force.drag );
 
 				node.append("image")
-				.attr("xlink:href", function(d) { return "/styles/icons/" + d.icon; })
+				.attr("xlink:href", function(d) { return "images/icons/" + d.icon; })
 				.attr("x", -16)
 				.attr("y", -16)
 				.attr("width", 32)
