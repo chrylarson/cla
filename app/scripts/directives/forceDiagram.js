@@ -40,23 +40,24 @@ angular.module('claApp')
 
 			});
 
-			var svg = d3.select('#viz')
-			.append('svg')
-			.attr('width', width)
-			.attr('height', height)
-			.attr("viewBox", "0 0 " + width + " " + height )
-    		.attr("preserveAspectRatio", "xMidYMid meet")
-    		.attr("pointer-events", "all")
-    		.call(d3.behavior.zoom().on("zoom", redraw));
+			var vis = d3.select("#viz")
+				.append("svg")
+				.attr("width", width)
+				.attr("height", height)
+				.attr("pointer-events", "all")
+				.append('svg:g')
+				.append('svg:g');
 
-			var vis = svg
-			    .append('svg:g');
+			vis.append('rect')
+			    .attr('width', "100%")
+			    .attr('height', "100%")
+			    .call(d3.behavior.zoom().on("zoom", redraw))
+			    .attr('fill', 'rgba(1,1,1,0)')
 
 			function redraw() {
-			  vis.attr("transform",
-			      "translate(" + d3.event.translate + ")"
-			      + " scale(" + d3.event.scale + ")");
-			}
+				vis.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"); }	
+				
+			vis = vis.append("g");
 
 			var link = vis.selectAll(".link"),
 			node = vis.selectAll(".node");
