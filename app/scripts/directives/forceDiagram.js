@@ -10,10 +10,11 @@ angular.module('claApp')
 			list: '='
 		},
 		link: function postLink(scope, element, attrs) {
-			function name(d) { return d.name; }
-			function group(d) { return d.group; }
-			var color = d3.scale.category10();
-			function colorByGroup(d) { return color(group(d)); }
+
+	        var color = d3.scale.category10();
+	        function colorByGroup(d) {
+	            return color(d.value); 
+	        }
 
 			var width = 500,
 			height = 500;
@@ -97,10 +98,13 @@ angular.module('claApp')
 				scope.nodes.links = nodelinks;
 
 				link = link.data( scope.nodes.links );
+
 				link.exit().remove();
-				link.enter().append('line')
-				.attr('class', 'link')
-				.style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+				link.enter()
+				.append('line')
+				.style('stroke', function(d) { return d.source.color; })
+				.attr('class', 'link');
 
 				node = node.data( scope.nodes.nodes );
 				node.exit().remove();
@@ -109,7 +113,21 @@ angular.module('claApp')
 				.attr('class', 'node')
 				.call( force.drag );
 
-				node.append("svg:image")
+				//icon border color
+				node
+				.append("svg:rect")
+				.attr("x", -16)
+				.attr("y", -16)
+				.attr("width", 32)
+				.attr("height", 32)
+				.style("stroke", function(d) { return d.color; } )
+				.style("stroke-width", 3)
+				.style("stroke-linejoin","round")
+				.attr('fill', 'none');
+
+				//icon
+				node
+				.append("svg:image")
 				.attr("class", "square")
 				.attr("xlink:href", function(d) { return "images/icons/" + d.icon; })
 				.attr("x", -16)
@@ -118,6 +136,23 @@ angular.module('claApp')
 				.attr("height", 32)
 				.append("svg:title")
    				.text(function(d) { return d.name; });
+
+				// On node hover, examine the links to see if their
+				// source or target properties match the hovered node.
+				node.on('mouseover', function(d) {
+				  link.style('stroke-width', function(l) {
+				    if (d === l.source || d === l.target)
+				      return 4;
+				    else
+				      return 1;
+				    });
+				});
+
+				// Set the stroke width back to normal when mouse leaves the node.
+				node.on('mouseout', function() {
+				  link.style('stroke-width', 1);
+				});
+
 
    				force
 				.nodes( scope.nodes.nodes )

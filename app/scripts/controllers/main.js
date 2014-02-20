@@ -13,9 +13,9 @@ angular.module('claApp')
 		}
 	};
 
-    d3.json("static-linkages.json", function(error, root) {
+    d3.json("static-linkages.json", function(error, json) {
         console.log("Ctrl Update List");
-        $scope.list = root;
+        $scope.list = json;
 
     	$scope.list.nodes.forEach(function (node, index) {
     		node.id = index;
@@ -27,12 +27,28 @@ angular.module('claApp')
     		link.hidden = false;
     	});
 
+        var color = d3.scale.category10();
+        function colorByGroup(d) {
+            if( typeof d.owner === 'object') {
+               return color(d.owner.id); 
+           } else {
+                return color(0);
+           }
+        }
+
     	// make links reference nodes directly
     	var hash_lookup = [];
     	// make it so we can lookup nodes in O(1):
     	$scope.list.nodes.forEach(function(d, i) {
     		hash_lookup[d.id] = d;
+            hash_lookup[d.name] = d;
     	});
+
+        $scope.list.nodes.forEach(function(d, i) {
+            d.owner = hash_lookup[d.owner];
+            d.color = colorByGroup(d);
+        });
+
     	$scope.list.links.forEach(function(d, i) {
     		d.source = hash_lookup[d.source];
     		d.target = hash_lookup[d.target];
