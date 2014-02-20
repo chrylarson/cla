@@ -27,6 +27,7 @@ angular.module('claApp')
             }
 
 			var force = d3.layout.force()
+			.gravity(0.1)
 			.charge(-1000)
 			.linkDistance(30)
 			.size([width, height])
@@ -44,10 +45,9 @@ angular.module('claApp')
 				.append("svg")
 				.attr("width", width)
 				.attr("height", height)
-				.attr("pointer-events", "all")
-				.append('svg:g')
-				.append('svg:g');
+				.attr("pointer-events", "all");
 
+			//the pan and zoom events happen on this rectangle
 			vis.append('rect')
 			    .attr('width', "100%")
 			    .attr('height', "100%")
@@ -59,8 +59,12 @@ angular.module('claApp')
 				
 			vis = vis.append("g");
 
-			var link = vis.selectAll(".link"),
-			node = vis.selectAll(".node");
+			//added to prevent links overlapping nodes
+			var linkG = vis.append("g"),
+			    nodeG = vis.append("g");
+
+			var node = nodeG.selectAll(".node"),
+			    link = linkG.selectAll(".link");
 
 			//wait for scope.list ready
 			scope.$watch('list', function(newValue, oldValue) {  	     
@@ -92,11 +96,6 @@ angular.module('claApp')
 				});
 				scope.nodes.links = nodelinks;
 
-				force
-				.nodes( scope.nodes.nodes )
-				.links( scope.nodes.links )
-				.start();
-
 				link = link.data( scope.nodes.links );
 				link.exit().remove();
 				link.enter().append('line')
@@ -119,6 +118,11 @@ angular.module('claApp')
 				.attr("height", 32)
 				.append("svg:title")
    				.text(function(d) { return d.name; });
+
+   				force
+				.nodes( scope.nodes.nodes )
+				.links( scope.nodes.links )
+				.start();
 			}
 
 			//listen for updates
