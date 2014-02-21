@@ -3,7 +3,7 @@
 angular.module('claApp')
 .directive('forceDiagram', function () {
 	return {
-		template: '<div id="viz"></div>',
+		template: '<div id="viz" class="affix"></div>',
 		restrict: 'E',
 		scope: {
 			nodes: '=',
