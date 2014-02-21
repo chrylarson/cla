@@ -28,9 +28,10 @@ angular.module('claApp')
             }
 
 			var force = d3.layout.force()
-			.gravity(0.1)
-			.charge(-1000)
-			.linkDistance(30)
+			.gravity(0.05)
+			.alpha(0.05)
+			.charge(-600)
+			.linkDistance(100)
 			.size([width, height])
 			.on('tick', function() {
 				node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; });
@@ -89,13 +90,24 @@ angular.module('claApp')
 					}
 				});
 
-				var nodelinks = [];
+				//var nodelinks = [];
 				scope.list.links.forEach(function (dlink, index) {
+					console.log(dlink);
 					if( dlink.source.hidden === false && dlink.target.hidden === false) {
-						nodelinks.push(dlink);
+						if( scope.nodes.links.indexOf(dlink) === -1 ) {
+							console.log("added");
+							scope.nodes.links.push(dlink);
+						}
+					} else {
+						if( scope.nodes.links.indexOf(dlink) !== -1 ) {
+							console.log("removed");
+							scope.nodes.links.splice(scope.nodes.links.indexOf(dlink), 1);
+						}
 					}
 				});
-				scope.nodes.links = nodelinks;
+				//scope.nodes.links = nodelinks;
+
+
 
 				link = link.data( scope.nodes.links );
 
@@ -104,6 +116,7 @@ angular.module('claApp')
 				link.enter()
 				.append('line')
 				.style('stroke', function(d) { return d.source.color; })
+				.style("stroke-width", "1px")
 				.attr('class', function(d) { return "link n" + (d.source.id) + " n" +(d.target.id)});
 
 				node = node.data( scope.nodes.nodes );
@@ -123,7 +136,7 @@ angular.module('claApp')
 				.attr("width", 32)
 				.attr("height", 32)
 				.style("stroke", function(d) { return d.color; } )
-				.style("stroke-width", 3)
+				.style("stroke-width", 1)
 				.attr("class", function(d) { return "n" + (d.id); })
 				.style("stroke-linejoin","round")
 				.attr('fill', 'none');

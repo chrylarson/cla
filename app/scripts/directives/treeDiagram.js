@@ -49,7 +49,7 @@ angular.module('claApp')
 			scope.toggle = function (node) {
 				if( node.hidden === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
-					d3.select("#n" + node.id).remove();
+					d3.selectAll(".n" + node.id).remove();
 				} else {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
 				}
