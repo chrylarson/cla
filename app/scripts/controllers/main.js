@@ -21,6 +21,7 @@ angular.module('claApp')
     		node.id = index;
     		node.hidden = false;
             node.icon = node.name.split(':',1)[0] + '.png';
+            node.highlight = false;
 
     	});
     	$scope.list.links.forEach(function (link, index) {

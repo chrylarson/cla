@@ -1,13 +1,13 @@
 
 <ul class="list-group">
-	<li class="list-group-item"  ng-repeat="node in treeOut">
+	<li class="list-group-item" ng-repeat="node in treeOut" ng-class="{'list-group-item-info' : node.parent.highlight}" ng-mouseenter="highlight(node.parent)" ng-mouseleave="unhighlight(node.parent)">
 		<div class="row">
 			<div class="col-xs-12">
 
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-10" ng-style="{'color':node.parent.color}" >
+			<div class="col-xs-10" ng-style="{'color':node.parent.color}">
 				<div class="btn-group">
 					<button class="btn btn-default btn-xs" ng-click="toggle(node.parent)">
 						<i class="glyphicon glyphicon-eye-close" ng-show="node.parent.hidden"></i>
@@ -27,7 +27,7 @@
 		<div class="row">
 			<div class="col-xs-12" ng-style="{'color':node.color}" >
 				<ul class="list-group" collapse="isCollapsed" >
-					<li class="list-group-item"  ng-repeat="node in node.children">
+					<li class="list-group-item"  ng-repeat="node in node.children" ng-class="{'list-group-item-info' : node.highlight}" ng-mouseenter="highlight(node)" ng-mouseleave="unhighlight(node)">
 						<div class="row">
 							<div class="col-xs-10" ng-style="{'color':node.color}">
 								<button class="btn btn-default btn-xs" ng-click="toggle(node)">

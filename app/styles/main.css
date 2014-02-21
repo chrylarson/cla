@@ -22,7 +22,7 @@ body {
 }
 
 #wrap {
-    margin-top:75px;
+    margin-top:50px;
 }
 
 .node circle {
@@ -40,4 +40,9 @@ body {
 line.link {
   fill: none;
   stroke-width: 1px;
+}
+
+.highlight {
+  stroke: black;
+  stroke-width: 8px;
 }

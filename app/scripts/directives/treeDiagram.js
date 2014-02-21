@@ -17,14 +17,14 @@ angular.module('claApp')
 						scope.isCollapsed = true;
 						scope.treeOut = {};
 						var treeArray = function(array,node,output) {
-							console.log(node.owner);
+							
 						    if ( typeof node.owner === 'undefined' ) {
-						    	console.log("parent: " + node.name)
+						    	//console.log("parent: " + node.name)
 						    	output[node.name] = {"parent":node, "children":[]};
 						        return output; // return default
 						    } 
 						    else if ( typeof output[node.owner.name] !== 'undefined' ) {
-						    	console.log("child: " + node.name)
+						    	//console.log("child: " + node.name)
 						    	output[node.owner.name].children.push(node);
 						    	return output;
 						    }
@@ -56,6 +56,30 @@ angular.module('claApp')
 					//console.log("Legend Update");
 				}
 			});
+
+			scope.highlight = function(node) {
+				console.log("#n" + node.id);
+				d3.select("#n" + node.id)
+				.style("stroke-width", "8px");
+				link.style('stroke-width', function(l) {
+					if (d === l.source || d === l.target)
+					  return 4;
+					else
+					  return 1;
+					});
+			}
+
+			scope.unhighlight = function(node) {
+				console.log("#n" + node.id);
+				d3.select("#n" + node.id)
+				.style("stroke-width", "1px");
+				link.style('stroke-width', function(l) {
+					if (d === l.source || d === l.target)
+					  return 4;
+					else
+					  return 1;
+					});
+			}
       }
     };
   });

@@ -3,7 +3,7 @@
 angular.module('claApp')
 .directive('forceDiagram', function () {
 	return {
-		template: '<div id="viz" class="affix"></div>',
+		template: '<div id="viz" ></div>',
 		restrict: 'E',
 		scope: {
 			nodes: '=',
@@ -122,6 +122,7 @@ angular.module('claApp')
 				.attr("height", 32)
 				.style("stroke", function(d) { return d.color; } )
 				.style("stroke-width", 3)
+				.attr("id", function(d) { return "n" + (d.id); })
 				.style("stroke-linejoin","round")
 				.attr('fill', 'none');
 
@@ -140,17 +141,21 @@ angular.module('claApp')
 				// On node hover, examine the links to see if their
 				// source or target properties match the hovered node.
 				node.on('mouseover', function(d) {
-				  link.style('stroke-width', function(l) {
-				    if (d === l.source || d === l.target)
-				      return 4;
-				    else
-				      return 1;
-				    });
+					d.highlight = true;
+					link.style('stroke-width', function(l) {
+					if (d === l.source || d === l.target)
+					  return 4;
+					else
+					  return 1;
+					});
+					scope.$apply();
 				});
 
 				// Set the stroke width back to normal when mouse leaves the node.
-				node.on('mouseout', function() {
-				  link.style('stroke-width', 1);
+				node.on('mouseout', function(d) {
+					d.highlight = false;
+					link.style('stroke-width', 1);
+					scope.$apply();
 				});
 
 
