@@ -62,11 +62,11 @@ angular.module('claApp')
 			vis = vis.append("g");
 
 			//added to prevent links overlapping nodes
-			var linkG = vis.append("g"),
-			    nodeG = vis.append("g");
+			var linkG = vis.append("g").attr("id","linkg"),
+			    nodeG = vis.append("g").attr("id","nodeg");
 
-			var node = nodeG.selectAll(".node"),
-			    link = linkG.selectAll(".link");
+			var node = d3.select("#nodeg").selectAll(".node"),
+			    link = d3.select("#linkg").selectAll(".link");
 
 			//wait for scope.list ready
 			scope.$watch('list', function(newValue, oldValue) {  	     
@@ -77,7 +77,10 @@ angular.module('claApp')
 			});
 			
 			function update() {
+				node = d3.select("#nodeg").selectAll(".node");
+			    link = d3.select("#linkg").selectAll(".link");
 
+				console.log(d3.selectAll(".link"));
 				scope.list.nodes.forEach(function (dnode, index) {
 					if ( dnode.hidden === true ) {
 						if (scope.nodes.nodes.indexOf(dnode) !== -1 ) {
@@ -90,23 +93,18 @@ angular.module('claApp')
 					}
 				});
 
-				//var nodelinks = [];
+				
 				scope.list.links.forEach(function (dlink, index) {
-					console.log(dlink);
-					if( dlink.source.hidden === false && dlink.target.hidden === false) {
-						if( scope.nodes.links.indexOf(dlink) === -1 ) {
-							console.log("added");
-							scope.nodes.links.push(dlink);
-						}
-					} else {
-						if( scope.nodes.links.indexOf(dlink) !== -1 ) {
-							console.log("removed");
+					if( dlink.source.hidden === true || dlink.target.hidden === true ) {
+						if (scope.nodes.links.indexOf(dlink) !== -1 ) {
 							scope.nodes.links.splice(scope.nodes.links.indexOf(dlink), 1);
 						}
+					} else {
+						if (scope.nodes.links.indexOf(dlink) === -1 ) {
+							scope.nodes.links.push(dlink);
+						} 						
 					}
 				});
-				//scope.nodes.links = nodelinks;
-
 
 
 				link = link.data( scope.nodes.links );
@@ -125,7 +123,7 @@ angular.module('claApp')
 
 				node.enter().append('g')
 				.attr('title', name)
-				.attr('class', 'node')
+				.attr('class', function(d) { return "node n" + (d.id); })
 				.call( force.drag );
 
 				//icon border color
@@ -144,7 +142,7 @@ angular.module('claApp')
 				//icon
 				node
 				.append("svg:image")
-				.attr("class", "square")
+				.attr("class", function(d) { return "square n" + (d.id); })
 				.attr("xlink:href", function(d) { return "images/icons/" + d.icon; })
 				.attr("x", -16)
 				.attr("y", -16)

@@ -25,7 +25,7 @@ angular.module('claApp')
 
     	});
     	$scope.list.links.forEach(function (link, index) {
-    		link.hidden = false;
+    		//link.hidden = false;
     	});
 
         var color = d3.scale.category10();
