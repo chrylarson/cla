@@ -104,10 +104,12 @@ angular.module('claApp')
 				link.enter()
 				.append('line')
 				.style('stroke', function(d) { return d.source.color; })
-				.attr('class', 'link');
+				.attr('class', function(d) { return "link n" + (d.source.id) + " n" +(d.target.id)});
 
 				node = node.data( scope.nodes.nodes );
+
 				node.exit().remove();
+
 				node.enter().append('g')
 				.attr('title', name)
 				.attr('class', 'node')
@@ -122,7 +124,7 @@ angular.module('claApp')
 				.attr("height", 32)
 				.style("stroke", function(d) { return d.color; } )
 				.style("stroke-width", 3)
-				.attr("id", function(d) { return "n" + (d.id); })
+				.attr("class", function(d) { return "n" + (d.id); })
 				.style("stroke-linejoin","round")
 				.attr('fill', 'none');
 
@@ -135,6 +137,8 @@ angular.module('claApp')
 				.attr("y", -16)
 				.attr("width", 32)
 				.attr("height", 32)
+				.attr("id", function(d) { return "n" + (d.id); })
+				.attr("class", function(d) { return "n" + (d.id); })
 				.append("svg:title")
    				.text(function(d) { return d.name; });
 
@@ -142,22 +146,18 @@ angular.module('claApp')
 				// source or target properties match the hovered node.
 				node.on('mouseover', function(d) {
 					d.highlight = true;
-					link.style('stroke-width', function(l) {
-					if (d === l.source || d === l.target)
-					  return 4;
-					else
-					  return 1;
-					});
+					d3.selectAll(".n" + d.id)
+					.style("stroke-width", "4px");
 					scope.$apply();
 				});
 
 				// Set the stroke width back to normal when mouse leaves the node.
 				node.on('mouseout', function(d) {
 					d.highlight = false;
-					link.style('stroke-width', 1);
+					d3.selectAll(".n" + d.id)
+					.style("stroke-width", "1px");
 					scope.$apply();
 				});
-
 
    				force
 				.nodes( scope.nodes.nodes )

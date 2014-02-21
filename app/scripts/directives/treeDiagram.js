@@ -36,17 +36,6 @@ angular.module('claApp')
 				    	scope.list.nodes.forEach(function(d, i) {
 				    		treeArray(scope.list.nodes,d,scope.treeOut );
 				    	});
-
-
-						scope.toggle = function (node) {
-							if( node.hidden === false) {
-								scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
-							} else {
-								scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
-							}
-							//notify controllers/directives that list has been updated
-							scope.nodes.update = scope.nodes.update + 1;
-						}
 					}
 			});
 
@@ -57,28 +46,29 @@ angular.module('claApp')
 				}
 			});
 
+			scope.toggle = function (node) {
+				if( node.hidden === false) {
+					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
+					d3.select("#n" + node.id).remove();
+				} else {
+					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+				}
+				//notify controllers/directives that list has been updated
+				scope.nodes.update = scope.nodes.update + 1;
+			}
+
 			scope.highlight = function(node) {
-				console.log("#n" + node.id);
-				d3.select("#n" + node.id)
-				.style("stroke-width", "8px");
-				link.style('stroke-width', function(l) {
-					if (d === l.source || d === l.target)
-					  return 4;
-					else
-					  return 1;
-					});
+				//console.log("#n" + node.id);
+				node.highlight = true;
+				d3.selectAll(".n" + node.id)
+				.style("stroke-width", "4px");
 			}
 
 			scope.unhighlight = function(node) {
-				console.log("#n" + node.id);
-				d3.select("#n" + node.id)
+				//console.log("#n" + node.id);
+				node.highlight = false;
+				d3.selectAll(".n" + node.id)
 				.style("stroke-width", "1px");
-				link.style('stroke-width', function(l) {
-					if (d === l.source || d === l.target)
-					  return 4;
-					else
-					  return 1;
-					});
 			}
       }
     };
