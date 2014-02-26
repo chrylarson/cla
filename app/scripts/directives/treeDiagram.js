@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('claApp')
-  .directive('treeDiagram', function () {
+  .directive('treeDiagram', function ($http) {
     return {
 		templateUrl: 'views/templates/treeDiagram.html',
 		restrict: 'E',
@@ -20,7 +20,8 @@ angular.module('claApp')
 							
 						    if ( typeof node.owner === 'undefined' ) {
 						    	//console.log("parent: " + node.name)
-						    	output[node.name] = {"parent":node, "children":[]};
+						    	node.children = [];
+						    	output[node.name] = node;
 						        return output; // return default
 						    } 
 						    else if ( typeof output[node.owner.name] !== 'undefined' ) {
@@ -39,13 +40,6 @@ angular.module('claApp')
 					}
 			});
 
-			//listen for updates
-			scope.$watch('nodes.update', function(newValue, oldValue) {  
-				if (newValue !== oldValue) {
-					//console.log("Legend Update");
-				}
-			});
-
 			scope.toggle = function (node) {
 				if( node.hidden === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
@@ -55,6 +49,22 @@ angular.module('claApp')
 				}
 				//notify controllers/directives that list has been updated
 				scope.nodes.update = scope.nodes.update + 1;
+			}
+
+			scope.openVI = function (node) {
+				var data = {"filename":node.name};
+				var url = "/links/openfile";
+					$http({
+				        url: url,
+				        method: "POST",
+				        timeout: 10000,
+				        data: data
+				    }).success(function (data) {
+				      data.values = data.values.reverse();
+				    	$scope.sunshine = data;
+					    }).error(function (response, status) {
+
+					    });
 			}
 
 			scope.highlight = function(node) {

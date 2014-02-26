@@ -77,6 +77,7 @@ angular.module('claApp')
 			});
 			
 			function update() {
+				//select all current nodes and links before updating
 				node = d3.select("#nodeg").selectAll(".node");
 			    link = d3.select("#linkg").selectAll(".link");
 
@@ -143,7 +144,7 @@ angular.module('claApp')
 				node
 				.append("svg:image")
 				.attr("class", function(d) { return "square n" + (d.id); })
-				.attr("xlink:href", function(d) { return "images/icons/" + d.icon; })
+				.attr("xlink:href", function(d) { return "images/" + d.icon; })
 				.attr("x", -16)
 				.attr("y", -16)
 				.attr("width", 32)
