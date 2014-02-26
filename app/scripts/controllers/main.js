@@ -22,7 +22,7 @@ angular.module('claApp')
     		node.hidden = false;
             node.icon = node.name.split(':',1)[0] + '.png';
             node.highlight = false;
-
+            node.collapsed = false;
     	});
     	$scope.list.links.forEach(function (link, index) {
     		//link.hidden = false;

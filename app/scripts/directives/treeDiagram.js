@@ -44,8 +44,45 @@ angular.module('claApp')
 				if( node.hidden === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
 					d3.selectAll(".n" + node.id).remove();
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
+							d3.selectAll(".n" + node.id).remove();
+						});
+					}
 				} else {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+						});
+					}
+				}
+				//notify controllers/directives that list has been updated
+				scope.nodes.update = scope.nodes.update + 1;
+			}
+
+			scope.collapse = function (node) {
+				if( node.collapsed === false) {
+					scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = true;
+					d3.selectAll(".n" + node.id).remove();
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = true;
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
+							d3.selectAll(".n" + node.id).remove();
+						});
+					}
+				} else {
+					scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = false;
+					d3.selectAll(".n" + node.id).remove();
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = false;
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+							d3.selectAll(".n" + node.id).remove();
+						});
+					}
 				}
 				//notify controllers/directives that list has been updated
 				scope.nodes.update = scope.nodes.update + 1;
@@ -60,8 +97,7 @@ angular.module('claApp')
 				        timeout: 10000,
 				        data: data
 				    }).success(function (data) {
-				      data.values = data.values.reverse();
-				    	$scope.sunshine = data;
+				      	console.log("Opening VI in LabVIEW");
 					    }).error(function (response, status) {
 
 					    });

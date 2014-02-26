@@ -81,7 +81,6 @@ angular.module('claApp')
 				node = d3.select("#nodeg").selectAll(".node");
 			    link = d3.select("#linkg").selectAll(".link");
 
-				console.log(d3.selectAll(".link"));
 				scope.list.nodes.forEach(function (dnode, index) {
 					if ( dnode.hidden === true ) {
 						if (scope.nodes.nodes.indexOf(dnode) !== -1 ) {
@@ -93,8 +92,7 @@ angular.module('claApp')
 						}         	
 					}
 				});
-
-				
+	
 				scope.list.links.forEach(function (dlink, index) {
 					if( dlink.source.hidden === true || dlink.target.hidden === true ) {
 						if (scope.nodes.links.indexOf(dlink) !== -1 ) {
@@ -106,7 +104,6 @@ angular.module('claApp')
 						} 						
 					}
 				});
-
 
 				link = link.data( scope.nodes.links );
 
