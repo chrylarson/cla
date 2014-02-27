@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('claApp')
-  .directive('treeDiagram', function () {
+  .directive('treeDiagram', function ($http) {
     return {
 		templateUrl: 'views/templates/treeDiagram.html',
 		restrict: 'E',
@@ -20,7 +20,8 @@ angular.module('claApp')
 							
 						    if ( typeof node.owner === 'undefined' ) {
 						    	//console.log("parent: " + node.name)
-						    	output[node.name] = {"parent":node, "children":[]};
+						    	node.children = [];
+						    	output[node.name] = node;
 						        return output; // return default
 						    } 
 						    else if ( typeof output[node.owner.name] !== 'undefined' ) {
@@ -39,22 +40,67 @@ angular.module('claApp')
 					}
 			});
 
-			//listen for updates
-			scope.$watch('nodes.update', function(newValue, oldValue) {  
-				if (newValue !== oldValue) {
-					//console.log("Legend Update");
-				}
-			});
-
 			scope.toggle = function (node) {
 				if( node.hidden === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
-					d3.select("#n" + node.id).remove();
+					d3.selectAll(".n" + node.id).remove();
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
+							d3.selectAll(".n" + node.id).remove();
+						});
+					}
 				} else {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+						});
+					}
 				}
 				//notify controllers/directives that list has been updated
 				scope.nodes.update = scope.nodes.update + 1;
+			}
+
+			scope.collapse = function (node) {
+				if( node.collapsed === false) {
+					scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = true;
+					d3.selectAll(".n" + node.id).remove();
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = true;
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
+							d3.selectAll(".n" + node.id).remove();
+						});
+					}
+				} else {
+					scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = false;
+					d3.selectAll(".n" + node.id).remove();
+					if ( typeof node.children !== 'undefined') {
+						node.children.forEach(function(node, index) {
+							scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = false;
+							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+							d3.selectAll(".n" + node.id).remove();
+						});
+					}
+				}
+				//notify controllers/directives that list has been updated
+				scope.nodes.update = scope.nodes.update + 1;
+			}
+
+			scope.openVI = function (node) {
+				var data = {"filename":node.name};
+				var url = "/links/openfile";
+					$http({
+				        url: url,
+				        method: "POST",
+				        timeout: 10000,
+				        data: data
+				    }).success(function (data) {
+				      	console.log("Opening VI in LabVIEW");
+					    }).error(function (response, status) {
+
+					    });
 			}
 
 			scope.highlight = function(node) {
