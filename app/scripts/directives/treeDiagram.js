@@ -16,8 +16,8 @@ angular.module('claApp')
 					if(typeof scope.list !== 'undefined') {
 						scope.isCollapsed = true;
 						scope.treeOut = {};
-
 						var treeArray = function(array,node,output) {
+							
 						    if ( typeof node.owner === 'undefined' ) {
 						    	//console.log("parent: " + node.name)
 						    	node.children = [];
