@@ -44,19 +44,8 @@ angular.module('claApp')
 				if( node.hidden === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
 					d3.selectAll(".n" + node.id).remove();
-					if ( typeof node.children !== 'undefined') {
-						node.children.forEach(function(node, index) {
-							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
-							d3.selectAll(".n" + node.id).remove();
-						});
-					}
 				} else {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
-					if ( typeof node.children !== 'undefined') {
-						node.children.forEach(function(node, index) {
-							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
-						});
-					}
 				}
 				//notify controllers/directives that list has been updated
 				scope.nodes.update = scope.nodes.update + 1;
@@ -65,21 +54,19 @@ angular.module('claApp')
 			scope.collapse = function (node) {
 				if( node.collapsed === false) {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = true;
-					d3.selectAll(".n" + node.id).remove();
+					//d3.selectAll(".n" + node.id).remove();
 					if ( typeof node.children !== 'undefined') {
 						node.children.forEach(function(node, index) {
-							scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = true;
-							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = true;
+							node.hidden = true;
 							d3.selectAll(".n" + node.id).remove();
 						});
 					}
 				} else {
 					scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = false;
-					d3.selectAll(".n" + node.id).remove();
+					//d3.selectAll(".n" + node.id).remove();
 					if ( typeof node.children !== 'undefined') {
 						node.children.forEach(function(node, index) {
-							scope.list.nodes[scope.list.nodes.indexOf(node)].collapsed = false;
-							scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
+							node.hidden = false;
 							d3.selectAll(".n" + node.id).remove();
 						});
 					}
