@@ -24,9 +24,6 @@ angular.module('claApp')
             node.highlight = false;
             node.collapsed = false;
     	});
-    	$scope.list.links.forEach(function (link, index) {
-    		//link.hidden = false;
-    	});
 
         var color = d3.scale.category10();
         function colorByGroup(d) {
@@ -54,6 +51,30 @@ angular.module('claApp')
     		d.source = hash_lookup[d.source];
     		d.target = hash_lookup[d.target];
     	});
+
+        $scope.tree = {};
+        var treeArray = function(array,node,output) {
+            
+            if ( typeof node.owner === 'undefined' ) {
+                node.collapsed = true;
+                node.children = [];
+                output[node.name] = node;
+                return output; // return default
+            } 
+            else if ( typeof output[node.owner.name] !== 'undefined' ) {
+                node.hidden = true;
+                output[node.owner.name].children.push(node);
+                return output;
+            }
+            else {
+                return treeArray(array, node.owner, output); // recur on x, reduce indx, update default
+            }
+        }
+
+        $scope.list.nodes.forEach(function(d, i) {
+            treeArray($scope.list.nodes,d,$scope.tree );
+        });
+
         $scope.$apply();
     });
 

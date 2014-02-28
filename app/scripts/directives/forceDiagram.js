@@ -29,9 +29,9 @@ angular.module('claApp')
 
 			var force = d3.layout.force()
 			.gravity(0.05)
-			.alpha(0.05)
-			.charge(-600)
-			.linkDistance(100)
+			.alpha(0.8)
+			.charge(-1000)
+			.linkDistance(200)
 			.size([width, height])
 			.on('tick', function() {
 				node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; });
@@ -93,6 +93,27 @@ angular.module('claApp')
 					}
 				});
 	
+				// scope.list.links.forEach(function (dlink, index) {
+				// 	var newLink = {"source":dlink.source,"target":dlink.target,"value":dlink.value};
+				// 	if( dlink.source.hidden === true || dlink.target.hidden === true ) {
+				// 		if( typeof dlink.source.owner !== 'undefined' ) {
+				// 			if( dlink.source.owner.collapsed === true ) {
+				// 				newLink.source = dlink.source.owner;
+				// 			}
+				// 		}
+				// 		if( typeof dlink.target.owner !== 'undefined' ) {
+				// 			if( dlink.target.owner.collapsed === true ) {
+				// 				newLink.target = dlink.target.owner;
+				// 			}
+				// 		}
+				// 		if (scope.list.links.indexOf(newLink) === -1 ) {
+				// 			console.log("true");
+				// 			scope.list.links.push(newLink);
+				// 		}
+						
+				// 	}
+				// });
+
 				scope.list.links.forEach(function (dlink, index) {
 					if( dlink.source.hidden === true || dlink.target.hidden === true ) {
 						if (scope.nodes.links.indexOf(dlink) !== -1 ) {
