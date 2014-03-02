@@ -19,13 +19,19 @@ angular.module('claApp')
 			var width = 500,
 			height = 500;
 
-			//adjust height/width to fill parent div
-            if (typeof element[0].parentNode.clientWidth !== "undefined") {
-                width =  element[0].parentNode.clientWidth;
-            }
-            if (typeof scope.nodes.windowHeight !== "undefined") {
-                height = scope.nodes.windowHeight-100;
-            }
+			function setup() {
+				//adjust height/width to fill parent div
+	            if (typeof element[0].parentNode.clientWidth !== "undefined") {
+	                width =  element[0].parentNode.clientWidth-20;
+	            }
+	            if (typeof scope.nodes.windowHeight !== "undefined") {
+	                height = scope.nodes.windowHeight;
+	            }
+	            d3.select("#viz svg").attr("width", width)
+	            .attr("height", height);
+			}
+
+			setup();
 
 			var force = d3.layout.force()
 			.gravity(0.05)
@@ -56,9 +62,6 @@ angular.module('claApp')
 			    .call(d3.behavior.zoom().on("zoom", redraw))
 			    .attr('fill', 'rgba(1,1,1,0)')
 
-			function redraw() {
-				vis.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"); }	
-				
 			vis = vis.append("g");
 
 			//added to prevent links overlapping nodes
@@ -67,6 +70,10 @@ angular.module('claApp')
 
 			var node = d3.select("#nodeg").selectAll(".node"),
 			    link = d3.select("#linkg").selectAll(".link");
+
+			function redraw() {
+				vis.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"); }	
+				
 
 			//wait for scope.list ready
 			scope.$watch('list', function(newValue, oldValue) {  	     
@@ -92,27 +99,6 @@ angular.module('claApp')
 						}         	
 					}
 				});
-	
-				// scope.list.links.forEach(function (dlink, index) {
-				// 	var newLink = {"source":dlink.source,"target":dlink.target,"value":dlink.value};
-				// 	if( dlink.source.hidden === true || dlink.target.hidden === true ) {
-				// 		if( typeof dlink.source.owner !== 'undefined' ) {
-				// 			if( dlink.source.owner.collapsed === true ) {
-				// 				newLink.source = dlink.source.owner;
-				// 			}
-				// 		}
-				// 		if( typeof dlink.target.owner !== 'undefined' ) {
-				// 			if( dlink.target.owner.collapsed === true ) {
-				// 				newLink.target = dlink.target.owner;
-				// 			}
-				// 		}
-				// 		if (scope.list.links.indexOf(newLink) === -1 ) {
-				// 			console.log("true");
-				// 			scope.list.links.push(newLink);
-				// 		}
-						
-				// 	}
-				// });
 
 				scope.list.links.forEach(function (dlink, index) {
 					if( dlink.source.hidden === true || dlink.target.hidden === true ) {
@@ -134,7 +120,17 @@ angular.module('claApp')
 				.append('line')
 				.style('stroke', function(d) { return d.source.color; })
 				.style("stroke-width", "1px")
-				.attr('class', function(d) { return "link n" + (d.source.id) + " n" +(d.target.id)});
+				.attr("class", function(d) {
+					var sourceOwner = "",
+						targetOwner = "";
+					if(typeof d.source.owner !== 'undefined') {
+						sourceOwner = "n" + d.source.owner.id;
+					}
+					if(typeof d.target.owner !== 'undefined') {
+						targetOwner = "n" + d.target.owner.id;
+					}
+					return "link n" + (d.source.id) + " n" +(d.target.id) + " " + sourceOwner + " " + targetOwner;
+				});
 
 				node = node.data( scope.nodes.nodes );
 
@@ -154,7 +150,13 @@ angular.module('claApp')
 				.attr("height", 32)
 				.style("stroke", function(d) { return d.color; } )
 				.style("stroke-width", 1)
-				.attr("class", function(d) { return "n" + (d.id); })
+				.attr("class", function(d) { 
+					if(typeof d.owner !== 'undefined') {
+						return "n" + d.owner.id + " " + "n" + (d.id);
+					} else {
+						return "n" + (d.id);
+					}
+				})
 				.style("stroke-linejoin","round")
 				.attr('fill', 'none');
 
@@ -168,7 +170,13 @@ angular.module('claApp')
 				.attr("width", 32)
 				.attr("height", 32)
 				.attr("id", function(d) { return "n" + (d.id); })
-				.attr("class", function(d) { return "n" + (d.id); })
+				.attr("class", function(d) {
+					if(typeof d.owner !== 'undefined') {
+						return "n" + d.owner.id + " " + "n" + (d.id);
+					} else {
+						return "n" + (d.id);
+					}
+				})
 				.append("svg:title")
    				.text(function(d) { return d.name; });
 
@@ -201,6 +209,13 @@ angular.module('claApp')
 	                update();
             	}
             }); 
+
+            //Resize Graph when parent div is resized
+            scope.$on("resize", function() {
+                console.log("redraw");
+                setup();
+                update();
+            });
 
 		}
 	};

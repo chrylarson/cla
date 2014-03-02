@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('claApp')
-.controller('MainCtrl', function ($scope, $window) {
+.controller('MainCtrl', function ($rootScope, $scope, $window) {
 
 	$scope.data =
 	{nodes:
@@ -9,9 +9,15 @@ angular.module('claApp')
 			"nodes":[],
 			"links":[],
 			update:1,
-			windowHeight:$window.innerHeight
+			windowHeight:$window.innerHeight-75
 		}
 	};
+
+    $window.onresize = function () {
+        console.log("ctrl resize");
+        $scope.data.nodes.windowHeight = $window.innerHeight-75;
+        $rootScope.$broadcast('resize');
+    };
 
     d3.json("static-linkages.json", function(error, json) {
         console.log("Ctrl Update List");
