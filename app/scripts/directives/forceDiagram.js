@@ -19,19 +19,13 @@ angular.module('claApp')
 			var width = 500,
 			height = 500;
 
-			function setup() {
-				//adjust height/width to fill parent div
-	            if (typeof element[0].parentNode.clientWidth !== "undefined") {
-	                width =  element[0].parentNode.clientWidth-20;
-	            }
-	            if (typeof scope.nodes.windowHeight !== "undefined") {
-	                height = scope.nodes.windowHeight;
-	            }
-	            d3.select("#viz svg").attr("width", width)
-	            .attr("height", height);
-			}
-
-			setup();
+			//adjust height/width to fill parent div
+            if (typeof element[0].parentNode.clientWidth !== "undefined") {
+                width =  element[0].parentNode.clientWidth;
+            }
+            if (typeof scope.nodes.windowHeight !== "undefined") {
+                height = scope.nodes.windowHeight;
+            }
 
 			var force = d3.layout.force()
 			.gravity(0.05)
@@ -62,6 +56,9 @@ angular.module('claApp')
 			    .call(d3.behavior.zoom().on("zoom", redraw))
 			    .attr('fill', 'rgba(1,1,1,0)')
 
+			function redraw() {
+				vis.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"); }	
+
 			vis = vis.append("g");
 
 			//added to prevent links overlapping nodes
@@ -71,22 +68,26 @@ angular.module('claApp')
 			var node = d3.select("#nodeg").selectAll(".node"),
 			    link = d3.select("#linkg").selectAll(".link");
 
-			function redraw() {
-				vis.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"); }	
-				
-
 			//wait for scope.list ready
 			scope.$watch('list', function(newValue, oldValue) {  	     
 				if (newValue !== oldValue) {
 					console.log("List updated");
+					console.log(newValue);
 					update();
 				}
 			});
-			
+
 			function update() {
 				//select all current nodes and links before updating
 				node = d3.select("#nodeg").selectAll(".node");
 			    link = d3.select("#linkg").selectAll(".link");
+
+				// make links reference nodes directly
+		    	scope.nodes.hash_lookup = [];
+		    	// make it so we can lookup nodes in O(1):
+		    	scope.nodes.nodes.forEach(function(d, i) {
+		    		scope.nodes.hash_lookup[d.id] = d;
+		    	});
 
 				scope.list.nodes.forEach(function (dnode, index) {
 					if ( dnode.hidden === true ) {
@@ -124,10 +125,10 @@ angular.module('claApp')
 					var sourceOwner = "",
 						targetOwner = "";
 					if(typeof d.source.owner !== 'undefined') {
-						sourceOwner = "n" + d.source.owner.id;
+						sourceOwner = "o" + d.source.owner.id;
 					}
 					if(typeof d.target.owner !== 'undefined') {
-						targetOwner = "n" + d.target.owner.id;
+						targetOwner = "o" + d.target.owner.id;
 					}
 					return "link n" + (d.source.id) + " n" +(d.target.id) + " " + sourceOwner + " " + targetOwner;
 				});
@@ -136,13 +137,13 @@ angular.module('claApp')
 
 				node.exit().remove();
 
-				node.enter().append('g')
+				var nodeEnter = node.enter().append('g')
 				.attr('title', name)
 				.attr('class', function(d) { return "node n" + (d.id); })
 				.call( force.drag );
 
 				//icon border color
-				node
+				nodeEnter
 				.append("svg:rect")
 				.attr("x", -16)
 				.attr("y", -16)
@@ -151,8 +152,8 @@ angular.module('claApp')
 				.style("stroke", function(d) { return d.color; } )
 				.style("stroke-width", 1)
 				.attr("class", function(d) { 
-					if(typeof d.owner !== 'undefined') {
-						return "n" + d.owner.id + " " + "n" + (d.id);
+					if(typeof d.ownerId !== 'undefined') {
+						return "o" + d.ownerId + " " + "n" + (d.id);
 					} else {
 						return "n" + (d.id);
 					}
@@ -161,7 +162,7 @@ angular.module('claApp')
 				.attr('fill', 'none');
 
 				//icon
-				node
+				nodeEnter
 				.append("svg:image")
 				.attr("class", function(d) { return "square n" + (d.id); })
 				.attr("xlink:href", function(d) { return "images/" + d.icon; })
@@ -170,13 +171,7 @@ angular.module('claApp')
 				.attr("width", 32)
 				.attr("height", 32)
 				.attr("id", function(d) { return "n" + (d.id); })
-				.attr("class", function(d) {
-					if(typeof d.owner !== 'undefined') {
-						return "n" + d.owner.id + " " + "n" + (d.id);
-					} else {
-						return "n" + (d.id);
-					}
-				})
+				.attr("class", function(d) { return "n" + (d.id); })
 				.append("svg:title")
    				.text(function(d) { return d.name; });
 
@@ -208,11 +203,23 @@ angular.module('claApp')
 				if (newValue !== oldValue) {
 	                update();
             	}
-            }); 
+            });
+
+			function setup() {
+				//adjust height/width to fill parent div
+	            if (typeof element[0].parentNode.clientWidth !== "undefined") {
+	                width =  element[0].parentNode.clientWidth-20;
+	            }
+	            if (typeof scope.nodes.windowHeight !== "undefined") {
+	                height = scope.nodes.windowHeight;
+	            }
+	            d3.select("#viz svg").attr("width", width)
+	            .attr("height", height);
+			}
 
             //Resize Graph when parent div is resized
             scope.$on("resize", function() {
-                console.log("redraw");
+                console.log("resize");
                 setup();
                 update();
             });

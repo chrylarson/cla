@@ -41,21 +41,21 @@ angular.module('claApp')
         }
 
     	// make links reference nodes directly
-    	var hash_lookup = [];
+    	$scope.list.hash_lookup = [];
     	// make it so we can lookup nodes in O(1):
     	$scope.list.nodes.forEach(function(d, i) {
-    		hash_lookup[d.id] = d;
-            hash_lookup[d.name] = d;
+    		$scope.list.hash_lookup[d.id] = d;
+            $scope.list.hash_lookup[d.name] = d;
     	});
 
         $scope.list.nodes.forEach(function(d, i) {
-            d.owner = hash_lookup[d.owner];
+            d.owner = $scope.list.hash_lookup[d.owner];
             d.color = colorByGroup(d);
         });
 
     	$scope.list.links.forEach(function(d, i) {
-    		d.source = hash_lookup[d.source];
-    		d.target = hash_lookup[d.target];
+    		d.source = $scope.list.hash_lookup[d.source];
+    		d.target = $scope.list.hash_lookup[d.target];
     	});
 
         $scope.tree = {};

@@ -29,6 +29,7 @@ angular.module('claApp')
 					scope.list.nodes[scope.list.nodes.indexOf(node)].hidden = false;
 					//d3.selectAll(".n" + node.id).remove();
 					if ( typeof node.children !== 'undefined') {
+						//console.log(node.children);
 						node.children.forEach(function(node, index) {
 							node.hidden = true;
 							d3.selectAll(".n" + node.id).remove();
@@ -70,12 +71,16 @@ angular.module('claApp')
 				node.highlight = true;
 				d3.selectAll(".n" + node.id)
 				.style("stroke-width", "4px");
+				d3.selectAll(".o" + node.id)
+				.style("stroke-width", "4px");
 			}
 
 			scope.unhighlight = function(node) {
 				//console.log("#n" + node.id);
 				node.highlight = false;
 				d3.selectAll(".n" + node.id)
+				.style("stroke-width", "1px");
+				d3.selectAll(".o" + node.id)
 				.style("stroke-width", "1px");
 			}
       }
